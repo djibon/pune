@@ -17,6 +17,7 @@ func main(){
 	
 	e.GET("/", handlers.Hello())
 	e.GET("/2", handlers.Hello2())
+	e.POST("/subscribe-topic", handlers.SubscribeTopic())
 	
 	fmt.Println("Start Server")
 	e.Logger.Fatal(e.Start(":1234"))
