@@ -19,6 +19,10 @@ func main(){
 	e.GET("/2", handlers.Hello2())
 	e.POST("/subscribe-topic", handlers.SubscribeTopic())
 	e.POST("/subscribe-group", handlers.SubscribeGroup())
+	e.POST("/send-single", handlers.SendSingleDevice())
+	e.POST("/send-topic",  handlers.SendTopic())
+	e.POST("/send-group",  handlers.SendGroup())
+
 	
 	fmt.Println("Start Server")
 	e.Logger.Fatal(e.Start(":1234"))
