@@ -37,6 +37,7 @@ type Group struct {
 	NotificationKey string `json:"notification_key" validate:"required"`
 }
 
+
 //send to single device.
 func SendSingleDevice() func(echo.Context) error {
 	return func(c echo.Context) error {
@@ -166,7 +167,7 @@ func SendToGroup() func(echo.Context) error {
 				"score": "850",
 				"time":  "2:45",
 			},
-			To:notification_key,
+			Token:notification_key,
 		}
 		
 		response, err := client.Send(ctx, message)
