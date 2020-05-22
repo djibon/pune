@@ -29,6 +29,11 @@ type Token struct {
 	DeviceId string `json:"device_id" validate:"required"`
 }
 
+type Topic struct {
+	Topic string `json:"topic" validate:"required"`
+}
+
+//send to single device.
 func SendSingleDevice() func(echo.Context) error {
 	return func(c echo.Context) error {
 		//TODO APP PUT IN CONTEXT?
@@ -87,9 +92,44 @@ func SendSingleDevice() func(echo.Context) error {
 	}
 }
 
-func SendTopic() func(echo.Context) error {
+//send to topic
+func SendToTopic() func(echo.Context) error {
 	return func(c echo.Context) error {
+		//TODO APP PUT IN CONTEXT?
+		app := libs.InitializeAppWithServiceAccount()
+		ctx := context.Background()
+		client, err := app.Messaging(ctx)
+		topic := new(Topic)
+		if err := c.Bind(topic); err != nil{
+			msg := &Message{
+				Status: "0",
+				Message: err.Error(),
+			}
+			return c.JSON(http.StatusOK, msg)
+
+		}
+
+		topic_topic := topic.Topic
+		message := &messaging.Message{
+			Data: map[string]string{
+				"score": "850",
+				"time":  "2:45",
+			},
+			Topic: topic_topic,
+		}
 		
+		response, err := client.Send(ctx, message)
+		if err != nil {
+			msg := &Message{
+				Status: "0",
+				Message: err.Error(),
+			}
+			return c.JSON(http.StatusOK, msg)
+		}
+		
+		// Response is a message ID string.
+		fmt.Println("Successfully sent message:", response)
+
 		msg := &Message{
 			Status: "1",
 			Message: "OK",
@@ -100,6 +140,7 @@ func SendTopic() func(echo.Context) error {
 	}
 }
 
+//send to group
 func SendGroup() func(echo.Context) error {
 	return func(c echo.Context) error {
 		
@@ -114,6 +155,7 @@ func SendGroup() func(echo.Context) error {
 }
 
 
+//subscribe to group
 func SubscribeGroup() func(echo.Context) error {
 	return func(c echo.Context) error {
 		gt := new(GroupData)
@@ -144,6 +186,7 @@ func SubscribeGroup() func(echo.Context) error {
 }
 
 
+//subscribe tot topic
 func SubscribeTopic() func(echo.Context) error {
 	return func(c echo.Context) error {
 		app := libs.InitializeAppWithServiceAccount()

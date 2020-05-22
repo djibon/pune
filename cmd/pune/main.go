@@ -20,7 +20,7 @@ func main(){
 	e.POST("/subscribe-topic", handlers.SubscribeTopic())
 	e.POST("/subscribe-group", handlers.SubscribeGroup())
 	e.POST("/send-single", handlers.SendSingleDevice())
-	e.POST("/send-topic",  handlers.SendTopic())
+	e.POST("/send-to-topic",  handlers.SendToTopic())
 	e.POST("/send-group",  handlers.SendGroup())
 
 	
