@@ -21,7 +21,7 @@ func main(){
 	e.POST("/subscribe-group", handlers.SubscribeGroup())
 	e.POST("/send-single", handlers.SendSingleDevice())
 	e.POST("/send-to-topic",  handlers.SendToTopic())
-	e.POST("/send-group",  handlers.SendGroup())
+	e.POST("/send-to-group",  handlers.SendToGroup())
 
 	
 	fmt.Println("Start Server")

@@ -33,6 +33,10 @@ type Topic struct {
 	Topic string `json:"topic" validate:"required"`
 }
 
+type Group struct {
+	NotificationKey string `json:"notification_key" validate:"required"`
+}
+
 //send to single device.
 func SendSingleDevice() func(echo.Context) error {
 	return func(c echo.Context) error {
@@ -141,16 +145,48 @@ func SendToTopic() func(echo.Context) error {
 }
 
 //send to group
-func SendGroup() func(echo.Context) error {
+func SendToGroup() func(echo.Context) error {
 	return func(c echo.Context) error {
+		app := libs.InitializeAppWithServiceAccount()
+		ctx := context.Background()
+		client, err := app.Messaging(ctx)
+		group := new(Group)
+		if err := c.Bind(group); err != nil{
+			msg := &Message{
+				Status: "0",
+				Message: err.Error(),
+			}
+			return c.JSON(http.StatusOK, msg)
+
+		}
+
+		notification_key := group.NotificationKey
+		message := &messaging.Message{
+			Data: map[string]string{
+				"score": "850",
+				"time":  "2:45",
+			},
+			To:notification_key,
+		}
 		
+		response, err := client.Send(ctx, message)
+		if err != nil {
+			msg := &Message{
+				Status: "0",
+				Message: err.Error(),
+			}
+			return c.JSON(http.StatusOK, msg)
+		}
+		
+		// Response is a message ID string.
+		fmt.Println("Successfully sent message:", response)
+
 		msg := &Message{
 			Status: "1",
 			Message: "OK",
 		}
 		
 		return c.JSON(http.StatusOK, msg)
-
 	}
 }
 
